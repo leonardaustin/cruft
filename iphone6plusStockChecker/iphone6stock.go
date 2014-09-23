@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	log "github.com/cihub/seelog"
 	"github.com/deckarep/gosx-notifier"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -31,7 +33,11 @@ var StoreCodes map[string]string = map[string]string{
 	"R226": "White City",
 }
 
+var apikey = flag.String("apikey", "0", "Boop API Key")
+
 func main() {
+	flag.Parse()
+
 	ch := make(chan string)
 	go pinger(ch, "https://reserve.cdn-apple.com/GB/en_GB/reserve/iPhone/availability.json")
 
@@ -43,9 +49,25 @@ func main() {
 				showNotification(s)
 			} else {
 				showNotification("Store has stock!!! - " + result)
+				sendBoop("Store has stock!!! - " + result)
 			}
 		}
 	}
+}
+
+func sendBoop(message string) {
+	if *apikey != "0" {
+		resp, err := http.PostForm("http://boopapp.appspot.com/send",
+			url.Values{"apikey": {*apikey}, "recipient": {"lenny"}, "text": {message}, "smiley": {"3"}})
+		if err != nil {
+			// Do nothing
+		}
+
+		if resp.Body != nil {
+			resp.Body.Close()
+		}
+	}
+
 }
 
 func showNotification(message string) {
