@@ -25,7 +25,6 @@ type iPhone6p struct {
 	Stock bool `json:"MGAH2B/A"`
 }
 
-//a slice of string sites that you are interested in watching
 var StoreCodes map[string]string = map[string]string{
 	"R245": "Covent Garden",
 	"R092": "Regent Street",
@@ -39,7 +38,7 @@ func main() {
 	flag.Parse()
 
 	ch := make(chan string)
-	go pinger(ch, "https://reserve.cdn-apple.com/GB/en_GB/reserve/iPhone/availability.json")
+	go callSite(ch, "https://reserve.cdn-apple.com/GB/en_GB/reserve/iPhone/availability.json")
 
 	for {
 		select {
@@ -79,8 +78,7 @@ func showNotification(message string) {
 	note.Push()
 }
 
-//Prefixing a site with a + means it's up, while - means it's down
-func pinger(ch chan string, site string) {
+func callSite(ch chan string, site string) {
 	for {
 		resp, err := http.Get(site)
 		if err != nil {
