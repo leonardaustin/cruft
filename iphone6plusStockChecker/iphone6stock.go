@@ -83,16 +83,11 @@ func showNotification(message string) {
 func pinger(ch chan string, site string) {
 	for {
 		resp, err := http.Get(site)
-
-		defer func() {
-			if resp.Body != nil {
-				resp.Body.Close()
-			}
-		}()
-
 		if err != nil {
 			ch <- "- Cant get website"
+			continue
 		}
+		defer resp.Body.Close()
 
 		if resp.StatusCode != 200 {
 			ch <- "- 200 Fail"
