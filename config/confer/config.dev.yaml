@@ -1,0 +1,10 @@
+---
+app:
+  log: "verbose"
+  database:
+    host: "localhost"
+    name: "db_name"
+    port: "3306"
+  redis:
+    host: "178.278.99.1"
+    post: "6792"
