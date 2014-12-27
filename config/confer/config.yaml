@@ -2,7 +2,7 @@
 app:
   log: "verbose"
   database:
-    host: "111.222.333.44"
+    host: "111.222.333.10"
     name: "db_name"
     port: "3306"
   redis:

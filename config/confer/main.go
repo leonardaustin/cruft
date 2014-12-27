@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jacobstr/confer"
 )
@@ -9,6 +10,11 @@ import (
 var Config *confer.Config
 
 func init() {
+	setup()
+}
+
+func setup() {
+
 	Config = confer.NewConfig()
 	appenv := "" //appenv := os.Getenv("MYAPP_ENV")
 	paths := []string{"config.yaml"}
@@ -23,7 +29,19 @@ func init() {
 }
 
 func main() {
-	Config.SetDefault("app.database.hosts", "content")
-	dbhost := Config.GetString("app.database.hosts")
-	fmt.Println(dbhost)
+
+	go func() {
+		for {
+			setup()
+			time.Sleep(15 * time.Second)
+		}
+	}()
+
+	for {
+		Config.SetDefault("app.database.hosts", "content")
+		dbhost := Config.GetString("app.database.host")
+		fmt.Println("CONFIG VALUE:", dbhost)
+
+		time.Sleep(5 * time.Second)
+	}
 }
